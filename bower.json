@@ -1,0 +1,22 @@
+{
+  "name": "WebGLCube",
+  "authors": [
+    "Martin DEQUATREMARE <m.dequa@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Class": "MD4/Class",
+    "sylvester": "~0.1.3"
+  }
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebGL experiment :: EPSI - I5 :: 2015 - 2016</title>
+
+    <!-- libs -->
+    <script src="lib/Class/Class.js"></script>
+    <script src="lib/sylvester/sylvester.js"></script>
+    <script src="lib/glUtils.js"></script>
+
+    <!-- app -->
+    <script src="src/namespaces.js"></script>
+
+    <script src="src/utils/ShadersUtils.js"></script>
+    <script src="src/utils/ImageUtils.js"></script>
+    <script src="src/utils/MatrixUtils.js"></script>
+    <script src="src/utils/MatrixStack.js"></script>
+
+    <script src="src/entities/Entity.js"></script>
+    <script src="src/entities/Camera.js"></script>
+    <script src="src/entities/Mesh.js"></script>
+    <script src="src/entities/Cube.js"></script>
+
+    <script src="src/core/Game.js"></script>
+
+    <script src="src/main.js"></script>
+</head>
+<body onload="start()">
+
+<canvas id="container" width="1280" height="728">
+    Votre navigateur ne semble pas supporter l'élément HTML5 <code>&lt;canvas&gt;</code>.
+</canvas>
+
+<!-- shaders -->
+
+<script id="shader-vs" type="x-shader/x-vertex">
+  attribute highp vec3 aVertexNormal;
+  attribute highp vec3 aVertexPosition;
+  attribute highp vec2 aTextureCoord;
+
+  uniform highp mat4 uNormalMatrix;
+  uniform highp mat4 uMVMatrix;
+  uniform highp mat4 uPMatrix;
+
+  varying highp vec2 vTextureCoord;
+  varying highp vec3 vLighting;
+
+  void main(void) {
+    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    vTextureCoord = aTextureCoord;
+
+    // Apply lighting effect
+
+    highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
+    highp vec3 directionalLightColor = vec3(0.8, 0.7, 1);
+    highp vec3 directionalVector = vec3(0.5, 0.8, 0.7);
+
+    highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
+
+    highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+    vLighting = ambientLight + (directionalLightColor * directional);
+  }
+</script>
+
+<!-- Vertex shader program -->
+
+<script id="shader-fs" type="x-shader/x-fragment">
+  varying highp vec2 vTextureCoord;
+  varying highp vec3 vLighting;
+
+  uniform sampler2D uSampler;
+
+  void main(void) {
+    mediump vec4 texelColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+
+    gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
+  }
+</script>
+
+</body>
+</html>
